@@ -40,14 +40,32 @@ namespace Ecommerce.Controllers
         public async Task<ActionResult<string>> AddOrder(CreateOrderDto neworder)
         {
             
-            var Id = User.Claims.FirstOrDefault(x => x.Type == "sub");
-            neworder.UserId = new Guid(Id.Value);
-            
-            var mappedorder = _mapper.Map<Order>(neworder);
+            var isauth = User?.Identity?.IsAuthenticated ?? false;
 
-            var response = await _orderservice.CreateOrderAsync(mappedorder);
+            if(isauth)
+            {
+                //var Id = User?.Claims.FirstOrDefault(x => x.Type == "Name").Value;
 
-            return Created($"Order/{mappedorder.Id}", response);
+                var Id = User?.Claims.ToList()[1].Value;
+
+
+
+                if (Id == null) return BadRequest("The user has no Id set");
+
+                Guid userId = Guid.Parse(Id);
+                neworder.UserId = userId;
+
+                var mappedorder = _mapper.Map<Order>(neworder);
+
+                var response = await _orderservice.CreateOrderAsync(mappedorder);
+
+                return Created($"Order/{mappedorder.Id}", response);
+
+
+            }
+
+            return Unauthorized();
+           
 
         }
 

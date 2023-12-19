@@ -10,7 +10,14 @@ namespace Ecommerce.Dto
         public DateTime OrderDate { get; set; } = new DateTime();
 
         [Required]
-        public Guid UserId { get; set; }
+        public Guid UserId { get; set; } = Guid.NewGuid();
+
+        [Required]
+        public List<Product> Products { get; set; } = default!;
+
+
+
+
 
 
     }

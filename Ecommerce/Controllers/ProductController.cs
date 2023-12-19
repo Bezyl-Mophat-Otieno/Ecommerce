@@ -3,6 +3,7 @@ using Ecommerce.Dto;
 using Ecommerce.Models;
 using Ecommerce.Services;
 using Ecommerce.Services.Iservices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,16 +26,23 @@ namespace Ecommerce.Controllers
 
 
         [HttpGet]
-        public async Task<ActionResult<List<Product>>> GetProducts()
+        public async Task<ActionResult<List<Product>>> GetProducts(int size , int page)
         {
-            var products = await _productservice.GetProductsAsync();
+            var products = await _productservice.GetProductsAsync(size\,page);
+            if(size != 0 && page != 0)
+            {
+           
+                var productsToBeDisplayed = products.Skip((size*(page-1))).Take(size).ToArray();
+            return Ok(productsToBeDisplayed);
 
-            if(products == null) return NotFound("No products found");
+            }
+
+            if (products == null) return NotFound("No products found");
             return Ok(products);
         }
 
         [HttpGet("filter")]
-        public async Task<ActionResult<List<Product>>> GetProducts(string productname , int price)
+        public async Task<ActionResult<List<Product>>> GetFilteredProducts(string productname , int price)
         {
             var products = await _productservice.GetProductsAsync();
 
@@ -58,6 +66,8 @@ namespace Ecommerce.Controllers
         }
 
         [HttpPost]
+        [Authorize(policy: "AdminPolicy")]
+
 
         public async Task<ActionResult<string>> AddProduct(AddProductDto newproduct ) {
 
@@ -80,6 +90,7 @@ namespace Ecommerce.Controllers
         }
 
         [HttpDelete("{Id}")]
+        [Authorize]
 
         public async Task<ActionResult> DeleteProduct(Guid Id) {
 
@@ -93,6 +104,8 @@ namespace Ecommerce.Controllers
         }
 
         [HttpPut("{Id}")]
+        [Authorize(policy: "AdminPolicy")]
+
 
         public async Task<ActionResult<string>> UpdateProduct(Guid Id , AddProductDto updatedproduct)
         {

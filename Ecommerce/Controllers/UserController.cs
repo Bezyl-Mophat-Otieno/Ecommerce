@@ -112,6 +112,15 @@ namespace Ecommerce.Controllers
 
 
         }
+        [HttpGet("orders")]
+
+        public async Task<ActionResult<List<Object>>> GetUserOrdersAndProducts(string Email)
+
+        {
+            var user = await _userservice.GetByEmail(Email);
+            var result = await _userservice.GetUserOrdersAndProducts(user.Id);
+            return Ok(result);
+        }
 
 
     }

@@ -16,5 +16,7 @@ namespace Ecommerce.Services.Iservices
 
 
         Task<List<User>> GetUsers();
+
+        Task<List<Object>> GetUserOrdersAndProducts(Guid Id);
     }
 }

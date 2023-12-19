@@ -1,6 +1,8 @@
-﻿using Ecommerce.Data;
+﻿using AutoMapper.QueryableExtensions;
+using Ecommerce.Data;
 using Ecommerce.Models;
 using Ecommerce.Services.Iservices;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.Services
@@ -70,14 +72,26 @@ namespace Ecommerce.Services
             }
         }
 
-        public async Task<List<Product>> GetProductsAsync()
+        public async Task<List<Product>> GetProductsAsync(int size , int page)
         {
 
             try
             {
-                var products = await _context.Products.ToListAsync();
+                var products = _context.Products.AsQueryable<Product>();
+
+                if (size>0 && page>0)
+                {
+                products = products.Skip((size * (page - 1))).Take(size);
+
+                    return await products.ToListAsync();
+
+
+                }
+
                 if(products == null) return new List<Product>();
-                return products;
+                
+
+                return products.ToList();
 
             }
             catch (Exception ex)

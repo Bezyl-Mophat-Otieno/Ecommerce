@@ -79,6 +79,28 @@ namespace Ecommerce.Services
             }
         }
 
+        public async Task<List<object>> GetUserOrdersAndProducts(Guid  Id)
+        {
+            try {
+
+                var OrdersWithProducts = await _context.Orders.Where(o => o.UserId == Id).Include(o=>o.Products).ToListAsync<Object>();
+
+               if(OrdersWithProducts.Count > 0)
+                {
+                    return OrdersWithProducts;
+                }
+               return new List<Object>();
+
+
+            } catch (Exception ex)
+            {
+
+                Console.WriteLine(ex.Message);
+                return new List<Object>();
+
+            }
+        }
+
         public async Task<List<User>> GetUsers()
         {
             try
@@ -123,7 +145,7 @@ namespace Ecommerce.Services
             {
 
                 await _context.SaveChangesAsync();
-                return "User infor updated successfully";
+                return "User information updated successfully";
 
             }
             catch (Exception ex)

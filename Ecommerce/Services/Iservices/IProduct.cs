@@ -6,12 +6,13 @@ namespace Ecommerce.Services.Iservices
     {
 
         Task<string> UpdateProductAsync();
-        Task<List<Product>> GetProductsAsync();
+        Task<List<Product>> GetProductsAsync(int size , int page);
 
         Task<string> DeleteProductsAsync(Product product);
 
         Task<Product> GetProductAsync(Guid Id);
 
         Task<string> AddProductAsync(Product product);
+
     }
 }
