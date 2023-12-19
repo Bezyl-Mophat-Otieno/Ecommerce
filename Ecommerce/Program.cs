@@ -1,4 +1,5 @@
 using Ecommerce.Data;
+using Ecommerce.Extensions;
 using Ecommerce.Models;
 using Ecommerce.Services;
 using Ecommerce.Services.Iservices;
@@ -17,10 +18,16 @@ builder.Services.AddDbContext<ApplicationDBContext>(options=>options.UseSqlServe
 builder.Services.AddScoped<IProduct, ProductService>();
 builder.Services.AddScoped<IOrder, OrderService>();
 builder.Services.AddScoped<IUser, Userservice>();
+builder.Services.AddScoped<IJwt, JWTservice>();
+
+// Enforcing authentication with Bearer tokens
+builder.AddAuth();
+// Enforcing Admon Policy 
+builder.AddminPolicy();
+
 
 
 // Registering Automapper
-
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 var app = builder.Build();
 
@@ -32,6 +39,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

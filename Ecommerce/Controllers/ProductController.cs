@@ -33,6 +33,30 @@ namespace Ecommerce.Controllers
             return Ok(products);
         }
 
+        [HttpGet("filter")]
+        public async Task<ActionResult<List<Product>>> GetProducts(string productname , int price)
+        {
+            var products = await _productservice.GetProductsAsync();
+
+            if (!string.IsNullOrEmpty(productname))
+            {
+                products = products.Where(x => x.Name == productname).ToList();
+                return Ok(products);
+            }
+
+            if (!string.IsNullOrEmpty(productname) && price != null)
+            {
+
+                products = products.Where(x => x.Name == productname).ToList();
+                products = products.Where(x => x.Price == price).ToList();
+
+                return Ok(products);
+            }
+
+            if (products == null) return NotFound("No products found");
+            return Ok(products);
+        }
+
         [HttpPost]
 
         public async Task<ActionResult<string>> AddProduct(AddProductDto newproduct ) {

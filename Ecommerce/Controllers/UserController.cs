@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Ecommerce.Dto;
 using Ecommerce.Models;
+using Ecommerce.Services;
 using Ecommerce.Services.Iservices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -15,11 +16,13 @@ namespace Ecommerce.Controllers
 
         private readonly IUser _userservice;
         private readonly IMapper _mapper;
+        private readonly IJwt _jwtservice;
 
-        public UserController(IUser userservice, IMapper mapper)
+        public UserController(IUser userservice, IMapper mapper , IJwt jwtservice)
         {
             _userservice = userservice;
             _mapper = mapper;
+            _jwtservice = jwtservice;
 
         }
 
@@ -46,6 +49,28 @@ namespace Ecommerce.Controllers
 
             var response = await _userservice.RegisterUser(user);
             return Ok(response);
+
+        }
+
+        [HttpPost("login")]
+
+        public async Task<ActionResult<string>> LoginUser(LoginDTO user ) {
+
+            // Check if the User exists 
+
+            var userexist = await _userservice.GetByEmail(user.Email);
+
+            if (userexist == null) return NotFound();
+
+            // Verify password match 
+
+            var isMatch = BCrypt.Net.BCrypt.Verify(user.Password, userexist.Password);
+
+            if (!isMatch) return Unauthorized("Invalid Credentials");
+
+            var token = _jwtservice.GetToken(userexist);
+
+            return Ok(token);
 
         }
         

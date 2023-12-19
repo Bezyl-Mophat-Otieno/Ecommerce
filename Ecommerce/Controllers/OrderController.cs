@@ -2,6 +2,7 @@
 using Ecommerce.Dto;
 using Ecommerce.Models;
 using Ecommerce.Services.Iservices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -34,10 +35,14 @@ namespace Ecommerce.Controllers
         }
 
         [HttpPost]
+        [Authorize]
 
         public async Task<ActionResult<string>> AddOrder(CreateOrderDto neworder)
         {
-
+            
+            var Id = User.Claims.FirstOrDefault(x => x.Type == "sub");
+            neworder.UserId = new Guid(Id.Value);
+            
             var mappedorder = _mapper.Map<Order>(neworder);
 
             var response = await _orderservice.CreateOrderAsync(mappedorder);
