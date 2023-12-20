@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Ecommerce.Dto;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Ecommerce.Models
@@ -11,7 +12,7 @@ namespace Ecommerce.Models
         public DateTime OrderDate { get; set; } = new DateTime();
 
 
-        public List<Product> Products { get; set; } = default!;
+        public List<OrderProductDTO> Products { get; set; } = default!;
 
         [ForeignKey("UserId")]
         public User User { get; set; } = default!;

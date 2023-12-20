@@ -1,4 +1,5 @@
-﻿using Ecommerce.Models;
+﻿using Ecommerce.Dto;
+using Ecommerce.Models;
 
 namespace Ecommerce.Services.Iservices
 {
@@ -6,7 +7,7 @@ namespace Ecommerce.Services.Iservices
     {
 
         Task<string> UpdateProductAsync();
-        Task<List<Product>> GetProductsAsync(int size , int page);
+        Task<PaginationMetadataDto> GetProductsAsync(int size , int page);
 
         Task<string> DeleteProductsAsync(Product product);
 

@@ -1,5 +1,6 @@
 ﻿using AutoMapper.QueryableExtensions;
 using Ecommerce.Data;
+using Ecommerce.Dto;
 using Ecommerce.Models;
 using Ecommerce.Services.Iservices;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
@@ -72,7 +73,7 @@ namespace Ecommerce.Services
             }
         }
 
-        public async Task<List<Product>> GetProductsAsync(int size , int page)
+        public async Task<PaginationMetadataDto> GetProductsAsync(int size , int page)
         {
 
             try
@@ -83,22 +84,25 @@ namespace Ecommerce.Services
                 {
                 products = products.Skip((size * (page - 1))).Take(size);
 
-                    return await products.ToListAsync();
+                    var pagemetadata = new PaginationMetadataDto() { PageSize = size, PageNumber = page, products = await products.ToListAsync() };
+
+                    return pagemetadata;
 
 
                 }
 
-                if(products == null) return new List<Product>();
-                
+                if(products == null) return new PaginationMetadataDto();
 
-                return products.ToList();
+                var responsemetadata = new PaginationMetadataDto() { PageSize = size, PageNumber = page, products = await products.ToListAsync() };
+
+                return responsemetadata;
 
             }
             catch (Exception ex)
             {
 
                 Console.WriteLine(ex.Message);
-                return new List<Product>();
+                return new PaginationMetadataDto();
 
 
             }
@@ -121,5 +125,7 @@ namespace Ecommerce.Services
 
             }
         }
+
+        
     }
 }

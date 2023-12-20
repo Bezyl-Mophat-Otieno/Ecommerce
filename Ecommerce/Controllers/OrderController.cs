@@ -47,13 +47,9 @@ namespace Ecommerce.Controllers
                 //var Id = User?.Claims.FirstOrDefault(x => x.Type == "Name").Value;
 
                 var Id = User?.Claims.ToList()[1].Value;
-
-
-
-                if (Id == null) return BadRequest("The user has no Id set");
-
                 Guid userId = Guid.Parse(Id);
                 neworder.UserId = userId;
+                if (Id == null) return BadRequest("The user has no Id set");
 
                 var mappedorder = _mapper.Map<Order>(neworder);
 

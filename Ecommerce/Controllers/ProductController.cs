@@ -6,6 +6,7 @@ using Ecommerce.Services.Iservices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Drawing;
 
 namespace Ecommerce.Controllers
 {
@@ -26,25 +27,20 @@ namespace Ecommerce.Controllers
 
 
         [HttpGet]
-        public async Task<ActionResult<List<Product>>> GetProducts(int size , int page)
+        public async Task<ActionResult<PaginationMetadataDto>> GetProducts(int size , int page)
         {
-            var products = await _productservice.GetProductsAsync(size\,page);
-            if(size != 0 && page != 0)
-            {
-           
-                var productsToBeDisplayed = products.Skip((size*(page-1))).Take(size).ToArray();
-            return Ok(productsToBeDisplayed);
-
-            }
-
-            if (products == null) return NotFound("No products found");
-            return Ok(products);
+            var paginationmetadata = await _productservice.GetProductsAsync(size,page);
+            if (paginationmetadata.products.Count == 0) return NotFound("No products found");
+            return Ok(paginationmetadata);
         }
 
         [HttpGet("filter")]
-        public async Task<ActionResult<List<Product>>> GetFilteredProducts(string productname , int price)
+        public async Task<ActionResult<List<Product>>> GetFilteredProducts(string productname , int price , int size, int page)
         {
-            var products = await _productservice.GetProductsAsync();
+            var response = await _productservice.GetProductsAsync(page , size);
+
+            var products = response.products;
+
 
             if (!string.IsNullOrEmpty(productname))
             {

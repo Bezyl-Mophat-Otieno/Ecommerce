@@ -13,7 +13,7 @@ namespace Ecommerce.Dto
         public Guid UserId { get; set; } = Guid.NewGuid();
 
         [Required]
-        public List<Product> Products { get; set; } = default!;
+        public List<OrderProductDTO> Products { get; set; } = default!;
 
 
 

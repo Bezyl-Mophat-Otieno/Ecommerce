@@ -78,7 +78,7 @@ namespace Ecommerce.Services
 
             try
             {
-                var orders = await _context.Orders.ToListAsync();
+                var orders = await _context.Orders.Include(x=>x.Products).ToListAsync();
                 if (orders == null) return new List<Order>();
                 return orders;
 
